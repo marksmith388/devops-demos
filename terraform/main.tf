@@ -22,6 +22,28 @@ resource "aws_subnet" "my_subnet" {
   }
 }
 
+resource "aws_subnet" "my_subnet2" {
+  vpc_id            = aws_vpc.my_vpc.id
+  availability_zone = "eu-west-1a"
+  cidr_block        = "172.16.11.0/24"
+
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "Linux Demo Subnet 2"
+  }
+}
+
+resource "aws_network_interface" "secondary_ip" {
+  subnet_id       = aws_subnet.my_subnet2.id
+  private_ips     = ["172.16.11.250"]
+
+  attachment {
+    instance     = aws_instance.app_server-1.id
+    device_index = 1
+  }
+}
+
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.my_vpc.id
 }
@@ -46,6 +68,13 @@ resource "aws_route_table_association" "public_assoc" {
   subnet_id      = aws_subnet.my_subnet.id
   route_table_id = aws_route_table.public_rt.id
 }
+
+# Associate the Route Table with the Subnet
+resource "aws_route_table_association" "public_assoc2" {
+  subnet_id      = aws_subnet.my_subnet2.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
 
 resource "aws_key_pair" "deployer" {
   key_name   = "deployer-key"
