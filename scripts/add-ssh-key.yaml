@@ -1,0 +1,27 @@
+#cloud-config
+cloud_config_modules:
+  - users-groups
+
+users:
+  - name: ubuntu
+    groups: [sudo]
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - < No leaked keys for you ;) >
+
+  - name: Ansible
+    groups: [sudo]
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - < No leaked keys for you ;) >
+    
+# Run standard Linux shell commands after the users are created
+runcmd:
+  - |
+    cat << 'EOF' >> /etc/ssh/sshd_config
+
+    # Portfolio Security: Lock Ansible user to the secondary subnet interface
+    Match User Ansible LocalAddress *,!172.16.11.*
+        DenyUsers Ansible
+    EOF
+  - systemctl restart sshd
