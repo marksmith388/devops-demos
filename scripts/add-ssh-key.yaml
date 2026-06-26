@@ -5,14 +5,14 @@ cloud_config_modules:
 users:
   - name: ubuntu
     groups: [sudo]
-    sudo: ALL=(ALL) NOPASSWD:ALL
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
     shell: /bin/bash
     ssh_authorized_keys:
       - < No leaked keys for you ;) >
 
-  - name: Ansible
+  - name: ansible
     groups: [sudo]
-    sudo: ALL=(ALL) NOPASSWD:ALL
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
     shell: /bin/bash
     ssh_authorized_keys:
       - < No leaked keys for you ;) >
